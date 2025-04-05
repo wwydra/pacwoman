@@ -1,6 +1,6 @@
-package Projekt_2.Okna;
+package project.frames;
 
-import Projekt_2.Wyniki.HighScores;
+import project.scores.HighScores;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +21,7 @@ extends JFrame implements ActionListener {
         setSize(600, 600);
         setLayout(new BorderLayout());
 
-        Image icon = new ImageIcon("src/Projekt_2/PlikiGraficzne/pacwPrawo1.png").getImage();
+        Image icon = new ImageIcon("src/project/graphics/pacwRight1.png").getImage();
         setIconImage(icon);
 
         JLabel jLabel = new JLabel("PacWoman");
@@ -50,7 +50,7 @@ extends JFrame implements ActionListener {
         buttonPanel.setMaximumSize(new Dimension(500, 500));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
-        ImageIcon icon = new ImageIcon("C:\\Users\\roman\\IdeaProjects\\GUI\\src\\Projekt_2\\PlikiGraficzne\\pacwPrawo1.png");
+        ImageIcon icon = new ImageIcon("src/project/graphics/pacwRight1.png");
         JLabel label = new JLabel(icon);
         buttonPanel.add(Box.createVerticalStrut(100));
         label.setAlignmentX(0.5f);

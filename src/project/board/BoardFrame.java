@@ -1,9 +1,9 @@
-package Projekt_2.Plansza;
+package project.board;
 
-import Projekt_2.Okna.Menu;
-import Projekt_2.Watki.*;
-import Projekt_2.Wyniki.Ranking;
-import Projekt_2.Wyniki.Wynik;
+import project.frames.Menu;
+import project.threads.*;
+import project.scores.Ranking;
+import project.scores.Score;
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
@@ -12,24 +12,24 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class PlanszaFrame
+public class BoardFrame
         extends JFrame implements KeyListener {
 
-    private final GraczThread graczThread;
+    private final PlayerThread playerThread;
     private boolean running = false;
-    private JLabel startGameLabel;
-    private JPanel bottom;
-    private JLabel lives;
-    private JPanel top;
+    private final JLabel startGameLabel;
+    private final JPanel bottom;
+    private final JLabel lives;
+    private final JPanel top;
 
-    public PlanszaFrame(int sizeX, int sizeY){
+    public BoardFrame(int sizeX, int sizeY){
         setTitle("PacWoman");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBackground(Color.BLACK);
         setSize(sizeX*20, sizeY*20);
         setLayout(new BorderLayout());
 
-        Image icon = new ImageIcon("src/Projekt_2/PlikiGraficzne/pacwPrawo1.png").getImage();
+        Image icon = new ImageIcon("src/project/graphics/pacwRight1.png").getImage();
         setIconImage(icon);
 
         this.top = new JPanel();
@@ -77,8 +77,8 @@ public class PlanszaFrame
 
         add(bottom, BorderLayout.SOUTH);
 
-        PlanszaModel model = new PlanszaModel(sizeX, sizeY, score, lives, this);
-        this.graczThread = new GraczThread(model, this);
+        BoardModel model = new BoardModel(sizeX, sizeY, score, lives, this);
+        this.playerThread = new PlayerThread(model, this);
 
         JPanel center = new JPanel();
         center.setBackground(Color.BLACK);
@@ -99,7 +99,7 @@ public class PlanszaFrame
             jTable.setRowHeight(i, iconHeight);
         }
 
-        PlanszaRenderer renderer = new PlanszaRenderer(this);
+        BoardRenderer renderer = new BoardRenderer(this);
         for (int i = 0; i < columnModel.getColumnCount(); i++) {
             columnModel.getColumn(i).setCellRenderer(renderer);
         }
@@ -108,11 +108,11 @@ public class PlanszaFrame
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                dostosuj(jTable, center);
+                adjust(jTable, center);
             }
         });
 
-        AnimacjaThread animacjaThread = new AnimacjaThread(renderer, this.graczThread, this);
+        Animation animation = new Animation(renderer, this.playerThread, this);
 
         add(center, BorderLayout.CENTER);
 
@@ -122,20 +122,20 @@ public class PlanszaFrame
         setLocationRelativeTo(null);
         setVisible(true);
 
-        this.graczThread.start();
-        animacjaThread.start();
-        int[][] xy = model.getXyDuchy();
-        DuchThread[] duchThreads = new DuchThread[model.getLiczbaDuchow()];
-        for (int i = 0; i < model.getLiczbaDuchow(); i++){
-            DuchThread duchThread = new DuchThread(model,this, renderer, xy[i][0], xy[i][1]);
-            duchThreads[i] = duchThread;
-            duchThread.start();
+        this.playerThread.start();
+        animation.start();
+        int[][] xy = model.getXyGhosts();
+        GhostThread[] ghostThreads = new GhostThread[model.getGhostCount()];
+        for (int i = 0; i < model.getGhostCount(); i++){
+            GhostThread ghostThread = new GhostThread(model,this, renderer, xy[i][0], xy[i][1]);
+            ghostThreads[i] = ghostThread;
+            ghostThread.start();
         }
-        model.setDuchThreads(duchThreads);
-        model.setGraczThread(graczThread);
+        model.setGhostThreads(ghostThreads);
+        model.setPlayerThread(playerThread);
 
-        UlepszeniaThread ulepszeniaThread = new UlepszeniaThread(this, model);
-        ulepszeniaThread.start();
+        UpgradesThread upgradesThread = new UpgradesThread(this, model);
+        upgradesThread.start();
 
         TimeThread timeThread = new TimeThread(time, this);
         timeThread.start();
@@ -143,33 +143,33 @@ public class PlanszaFrame
         repaintThread.start();
     }
 
-    private void dostosuj(JTable jTable, JPanel jPanel) {
-        int wysokoscPanel = jPanel.getHeight();
-        int liczbaWierszy = jTable.getRowCount();
-        int szerokoscPanel = jPanel.getWidth();
-        int liczbaKolumn = jTable.getColumnCount();
+    private void adjust(JTable jTable, JPanel jPanel) {
+        int panelHeight = jPanel.getHeight();
+        int rowCount = jTable.getRowCount();
+        int panelWidth = jPanel.getWidth();
+        int columnCount = jTable.getColumnCount();
 
-        if (liczbaWierszy > 0){
-            int wysokosc = wysokoscPanel / liczbaWierszy;
-            int res = wysokoscPanel % liczbaWierszy;
-            for (int i = 0; i < liczbaWierszy; i++){
-                int docelowa = wysokosc;
-                if (i == liczbaWierszy - 1)
-                    docelowa += res;
-                jTable.setRowHeight(i, docelowa);
+        if (rowCount > 0){
+            int height = panelHeight / rowCount;
+            int res = panelHeight % rowCount;
+            for (int i = 0; i < rowCount; i++){
+                int target = height;
+                if (i == rowCount - 1)
+                    target += res;
+                jTable.setRowHeight(i, target);
             }
         }
 
-        int kolumnySumaSzer = 0;
-        for (int i = 0; i < liczbaKolumn; i++) {
-            kolumnySumaSzer += jTable.getColumnModel().getColumn(i).getWidth();
+        int columnSum = 0;
+        for (int i = 0; i < columnCount; i++) {
+            columnSum += jTable.getColumnModel().getColumn(i).getWidth();
         }
 
-        if (kolumnySumaSzer != szerokoscPanel) {
-            double wspolczynnik = (double) szerokoscPanel / (double) kolumnySumaSzer;
-            for (int i = 0; i < liczbaKolumn; i++) {
-                int aktualnaSzerokosc = jTable.getColumnModel().getColumn(i).getWidth();
-                jTable.getColumnModel().getColumn(i).setPreferredWidth((int)(aktualnaSzerokosc * wspolczynnik));
+        if (columnSum != panelWidth) {
+            double factor = (double) panelWidth / (double) columnSum;
+            for (int i = 0; i < columnCount; i++) {
+                int currentWidth = jTable.getColumnModel().getColumn(i).getWidth();
+                jTable.getColumnModel().getColumn(i).setPreferredWidth((int)(currentWidth * factor));
             }
         }
 
@@ -182,10 +182,10 @@ public class PlanszaFrame
             SwingUtilities.invokeLater(() -> new Menu());
         }
         switch (e.getKeyCode()){
-            case KeyEvent.VK_W -> this.graczThread.setKierunek(3);
-            case KeyEvent.VK_A -> this.graczThread.setKierunek(1);
-            case KeyEvent.VK_S -> this.graczThread.setKierunek(2);
-            case KeyEvent.VK_D -> this.graczThread.setKierunek(0);
+            case KeyEvent.VK_W -> this.playerThread.setDirection(3);
+            case KeyEvent.VK_A -> this.playerThread.setDirection(1);
+            case KeyEvent.VK_S -> this.playerThread.setDirection(2);
+            case KeyEvent.VK_D -> this.playerThread.setDirection(0);
             case KeyEvent.VK_SPACE -> {
                 this.running = true;
                 this.startGameLabel.setVisible(false);
@@ -259,9 +259,9 @@ public class PlanszaFrame
 
         if (result == JOptionPane.OK_OPTION) {
             String nickname = textField.getText();
-            Wynik wynik = new Wynik(nickname, score);
+            Score playerScore = new Score(nickname, score);
             Ranking ranking = new Ranking();
-            ranking.dodajWynik(wynik);
+            ranking.addScore(playerScore);
         }
 
     }

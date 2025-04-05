@@ -1,7 +1,6 @@
-package Projekt_2.Okna;
+package project.frames;
 
-import Projekt_2.Plansza.PlanszaFrame;
-import Projekt_2.Watki.GraczThread;
+import project.board.BoardFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +17,7 @@ public class PreGame
         setBackground(Color.BLACK);
         setResizable(false);
 
-        Image icon = new ImageIcon("src/Projekt_2/PlikiGraficzne/pacwPrawo1.png").getImage();
+        Image icon = new ImageIcon("src/project/graphics/pacwRight1.png").getImage();
         setIconImage(icon);
 
         JPanel jPanel = new JPanel();
@@ -39,20 +38,20 @@ public class PreGame
         inputPanel.setPreferredSize(new Dimension(200, 150));
         inputPanel.setBackground(Color.BLACK);
 
-        JTextField kolumny = new JTextField(10);
-        kolumny.setPreferredSize(new Dimension(50, 30));
-        kolumny.setToolTipText("columns");
-        inputPanel.add(kolumny);
+        JTextField columns = new JTextField(10);
+        columns.setPreferredSize(new Dimension(50, 30));
+        columns.setToolTipText("columns");
+        inputPanel.add(columns);
 
         inputPanel.add(Box.createVerticalStrut(10));
-        JTextField wiersze = new JTextField(10);
-        wiersze.setPreferredSize(new Dimension(50, 30));
-        wiersze.setToolTipText("rows");
-        wiersze.setAlignmentX(0.5f);
-        inputPanel.add(wiersze);
+        JTextField rows = new JTextField(10);
+        rows.setPreferredSize(new Dimension(50, 30));
+        rows.setToolTipText("rows");
+        rows.setAlignmentX(0.5f);
+        inputPanel.add(rows);
 
         inputPanel.add(Box.createVerticalStrut(20));
-        gotoweButton(inputPanel, kolumny, wiersze);
+        readyButton(inputPanel, columns, rows);
         jPanel.add(inputPanel);
 
         addKeyListener(new KeyListener() {
@@ -81,29 +80,29 @@ public class PreGame
         setVisible(true);
     }
 
-    public void gotoweButton(JPanel inputPanel, JTextField kolumny, JTextField wiersze){
-        JButton gotowe = new JButton("Done");
-        gotowe.setAlignmentX(0.5f);
-        gotowe.setBackground(Color.BLACK);
-        gotowe.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 20));
-        gotowe.setForeground(Color.GREEN);
+    public void readyButton(JPanel inputPanel, JTextField columns, JTextField rows){
+        JButton ready = new JButton("Done");
+        ready.setAlignmentX(0.5f);
+        ready.setBackground(Color.BLACK);
+        ready.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 20));
+        ready.setForeground(Color.GREEN);
 
-        gotowe.addActionListener(e -> {
-            String kolumnyText = kolumny.getText();
-            String wierszeText = wiersze.getText();
-            boolean isValidKol = kolumnyText.matches("\\d+");
-            boolean isValidWie = wierszeText.matches("\\d+");
-            int kolumnyInt, wierszeInt;
+        ready.addActionListener(e -> {
+            String columnsText = columns.getText();
+            String rowsText = rows.getText();
+            boolean isValidKol = columnsText.matches("\\d+");
+            boolean isValidWie = rowsText.matches("\\d+");
+            int columnsInt, rowsInt;
 
-            if (gotowe.equals(e.getSource())){
+            if (ready.equals(e.getSource())){
                 if (!isValidKol && !isValidWie){
                     JOptionPane.showMessageDialog(null, "The entered board dimensions are not integers.");
                 }
-                kolumnyInt = Integer.parseInt(kolumnyText);
-                wierszeInt = Integer.parseInt(wierszeText);
+                columnsInt = Integer.parseInt(columnsText);
+                rowsInt = Integer.parseInt(rowsText);
 
-                if ((kolumnyInt >= 10 && kolumnyInt <= 100) && (wierszeInt >= 10 && wierszeInt <= 100)) {
-                    SwingUtilities.invokeLater(() -> new PlanszaFrame(kolumnyInt, wierszeInt));
+                if ((columnsInt >= 10 && columnsInt <= 100) && (rowsInt >= 10 && rowsInt <= 100)) {
+                    SwingUtilities.invokeLater(() -> new BoardFrame(columnsInt, rowsInt));
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "The dimentions of the board are incorrect. \nPlease enter numbers between 10 and 100 inclusive.");
@@ -111,6 +110,6 @@ public class PreGame
             }
         });
 
-        inputPanel.add(gotowe);
+        inputPanel.add(ready);
     }
 }

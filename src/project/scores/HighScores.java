@@ -1,23 +1,17 @@
-package Projekt_2.Wyniki;
+package project.scores;
 
-import Projekt_2.Okna.Menu;
-import Projekt_2.Wyniki.Wynik;
+import project.frames.Menu;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class HighScores
     extends JFrame{
 
-    private JList<Wynik> ranking;
+    private final JList<Score> ranking;
 
     public HighScores(){
         setTitle("PACwoMAN");
@@ -27,7 +21,7 @@ public class HighScores
         setResizable(false);
         setLayout(new BorderLayout());
 
-        Image icon = new ImageIcon("src/Projekt_2/PlikiGraficzne/pacwPrawo1.png").getImage();
+        Image icon = new ImageIcon("src/project/graphics/pacwRight1.png").getImage();
         setIconImage(icon);
 
         JLabel jLabel = new JLabel("High Scores");
@@ -45,7 +39,7 @@ public class HighScores
         this.ranking.setFont(new Font("Monospaced", Font.ITALIC, 25));
         this.ranking.setBackground(Color.BLACK);
         this.ranking.setForeground(Color.CYAN);
-        wyswietlWyniki();
+        displayScores();
 
         JScrollPane jScrollPane = new JScrollPane(this.ranking);
         jScrollPane.setBackground(Color.BLACK);
@@ -95,13 +89,13 @@ public class HighScores
         setVisible(true);
     }
 
-    public void wyswietlWyniki(){
+    public void displayScores(){
         Ranking rank = new Ranking();
-        List<Wynik> wyniki = rank.getWyniki();
+        List<Score> scores = rank.getScores();
 
-        DefaultListModel<Wynik> model = new DefaultListModel<>();
-        for (Wynik wynik : wyniki){
-            model.addElement(wynik);
+        DefaultListModel<Score> model = new DefaultListModel<>();
+        for (Score score : scores){
+            model.addElement(score);
         }
         ranking.setModel(model);
     }

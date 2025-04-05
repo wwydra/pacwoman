@@ -1,14 +1,14 @@
-package Projekt_2.Wyniki;
+package project.scores;
 
 import java.io.Serializable;
 
-public class Wynik
+public class Score
     implements Serializable {
 
-    private String nickname;
-    private int score;
+    private final String nickname;
+    private final int score;
 
-    public Wynik(String nickname, int score) {
+    public Score(String nickname, int score) {
         this.nickname = nickname;
         this.score = score;
     }

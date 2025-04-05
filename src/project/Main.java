@@ -1,7 +1,6 @@
-package Projekt_2;
+package project;
 
-import Projekt_2.Okna.Menu;
-import Projekt_2.Watki.GraczThread;
+import project.frames.Menu;
 
 import javax.swing.*;
 

@@ -1,20 +1,20 @@
-package Projekt_2.Watki;
+package project.threads;
 
-import Projekt_2.Plansza.PlanszaFrame;
+import project.board.BoardFrame;
 
 public class RepaintThread
     extends Thread{
 
-    private PlanszaFrame planszaFrame;
+    private final BoardFrame boardFrame;
 
-    public RepaintThread(PlanszaFrame planszaFrame) {
-        this.planszaFrame = planszaFrame;
+    public RepaintThread(BoardFrame boardFrame) {
+        this.boardFrame = boardFrame;
     }
 
     @Override
     public void run() {
         while (!Thread.interrupted()){
-            planszaFrame.repaint();
+            boardFrame.repaint();
             try {
                 Thread.sleep(15);
             } catch (InterruptedException e) {
