@@ -16,7 +16,7 @@ The project consists of multiple Java classes responsible for different aspects 
 <h2>Installation</h2>
 <ol>
   <li>Clone the repository: <b>git clone https://github.com/wwydra/pacwoman.git</b></li>
-  <li>Navigate to the project directory: <b>cd pacwoman/src/Projekt_2</b></li>
+  <li>Navigate to the project directory: <b>cd pacwoman/src/project</b></li>
   <li>Compile the Java files: <b>javac *.java</b></li>
   <li>Run the game: <b>java Main</b></li>
 </ol>
