@@ -179,7 +179,7 @@ public class BoardFrame
     public void keyPressed(KeyEvent e) {
         if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q){
             dispose();
-            SwingUtilities.invokeLater(() -> new Menu());
+            SwingUtilities.invokeLater(Menu::new);
         }
         switch (e.getKeyCode()){
             case KeyEvent.VK_W -> this.playerThread.setDirection(3);
@@ -211,47 +211,13 @@ public class BoardFrame
     public synchronized void stopRunning() {
         this.running = false;
         JLabel gameOver = new JLabel("GAME OVER!");
-        gameOver.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 30));
-        gameOver.setForeground(Color.RED);
-        gameOver.setOpaque(true);
-        gameOver.setBackground(Color.BLACK);
-        gameOver.setHorizontalAlignment(SwingConstants.CENTER);
-        gameOver.setVerticalAlignment(SwingConstants.CENTER);
-        gameOver.setPreferredSize(new Dimension(50, 50));
-        this.top.add(gameOver, BorderLayout.CENTER);
-
-        JLabel returnLabel = new JLabel("Hold Ctrl+Shift+Q to go back");
-        returnLabel.setOpaque(true);
-        returnLabel.setBackground(Color.BLACK);
-        returnLabel.setForeground(Color.RED);
-        returnLabel.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 20));
-        returnLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.bottom.remove(this.lives);
-        this.bottom.add(returnLabel, BorderLayout.CENTER);
-        pack();
+        setLabelContent(gameOver);
     }
 
     public synchronized void gameWon(int score){
         this.running = false;
         JLabel gameWon = new JLabel("YOU WON!");
-        gameWon.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 30));
-        gameWon.setForeground(Color.RED);
-        gameWon.setOpaque(true);
-        gameWon.setBackground(Color.BLACK);
-        gameWon.setHorizontalAlignment(SwingConstants.CENTER);
-        gameWon.setVerticalAlignment(SwingConstants.CENTER);
-        gameWon.setPreferredSize(new Dimension(50, 50));
-        this.top.add(gameWon, BorderLayout.CENTER);
-
-        JLabel returnLabel = new JLabel("Hold Ctrl+Shift+Q to go back");
-        returnLabel.setOpaque(true);
-        returnLabel.setBackground(Color.BLACK);
-        returnLabel.setForeground(Color.RED);
-        returnLabel.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 20));
-        returnLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.bottom.remove(this.lives);
-        this.bottom.add(returnLabel, BorderLayout.CENTER);
-        pack();
+        setLabelContent(gameWon);
 
         JTextField textField = new JTextField();
         Object[] options = {"OK"};
@@ -264,6 +230,27 @@ public class BoardFrame
             ranking.addScore(playerScore);
         }
 
+    }
+
+    private void setLabelContent(JLabel gameStatus) {
+        gameStatus.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 30));
+        gameStatus.setForeground(Color.RED);
+        gameStatus.setOpaque(true);
+        gameStatus.setBackground(Color.BLACK);
+        gameStatus.setHorizontalAlignment(SwingConstants.CENTER);
+        gameStatus.setVerticalAlignment(SwingConstants.CENTER);
+        gameStatus.setPreferredSize(new Dimension(50, 50));
+        this.top.add(gameStatus, BorderLayout.CENTER);
+
+        JLabel returnLabel = new JLabel("Hold Ctrl+Shift+Q to go back");
+        returnLabel.setOpaque(true);
+        returnLabel.setBackground(Color.BLACK);
+        returnLabel.setForeground(Color.RED);
+        returnLabel.setFont(new Font("Monospaced", Font.BOLD | Font.ITALIC, 20));
+        returnLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.bottom.remove(this.lives);
+        this.bottom.add(returnLabel, BorderLayout.CENTER);
+        pack();
     }
 }
 

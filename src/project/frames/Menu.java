@@ -93,10 +93,10 @@ extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (startButton.equals(e.getSource())){
-            SwingUtilities.invokeLater(()->new PreGame());
+            SwingUtilities.invokeLater(PreGame::new);
             dispose();
         } else if (hsButton.equals(e.getSource())){
-            SwingUtilities.invokeLater(()->new HighScores());
+            SwingUtilities.invokeLater(HighScores::new);
             dispose();
         }else if (exitButton.equals(e.getSource())){
             dispose();
