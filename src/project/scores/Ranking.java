@@ -20,7 +20,12 @@ public class Ranking
 
     public List<Score> loadScores(){
         List<Score> scoresList = new ArrayList<>();
-        try (FileInputStream fis = new FileInputStream("src/project/scores/HighScores.ser");
+        File file = new File("src/project/scores/HighScores.ser");
+        if (!file.exists() || file.length() == 0) {
+            System.out.println("No saved scores found or file is empty.");
+            return scoresList;
+        }
+        try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)){
             scoresList = (List<Score>) ois.readObject();
         }catch (IOException | ClassNotFoundException e){
